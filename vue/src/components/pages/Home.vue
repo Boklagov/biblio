@@ -88,6 +88,9 @@ export default {
     RouteNames() {
       return RouteNames
     },
+    books () {
+      return this.getBooks
+    },
     filteredBooks() {
       let filtered = this.getBooks
       if (this.selectedTypes.length > 0) {
