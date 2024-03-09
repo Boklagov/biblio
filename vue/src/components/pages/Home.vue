@@ -23,16 +23,12 @@
           @click="() => openNewBiblioModal()"
         >Добавить источник</ElButton>
       </div>
-      <div>
-        <input type="radio" id="sortByType" name="sort" @change="sortByType">
-        <label for="sortByType">Сортировать по типу</label>
-        <input type="radio" id="sortByAuthor" name="sort" @change="sortByAuthor">
-        <label for="sortByAuthor">Сортировать по автору</label>
-        <input type="radio" id="sortByTitle" name="sort" @change="sortByTitle">
-        <label for="sortByTitle">Сортировать по названию</label>
-        <input type="radio" id="sortByYear" name="sort" @change="sortByYear">
-        <label for="sortByYear">Сортировать по году</label>
-      </div>
+      <ElSelect v-model="sortBy" size="small" placeholder="Сортировать по" @change="sortBooks">
+        <ElOption label="По типу" value="type" />
+        <ElOption label="По автору" value="author" />
+        <ElOption label="По названию" value="title" />
+        <ElOption label="По году" value="year" />
+      </ElSelect>
       <ElSelect v-model="selectedTypes" multiple size="small" placeholder="Выберите типы источников">
         <ElOption
           v-for="(value, key) in LABEL_SOURCE_TYPE"
@@ -51,10 +47,10 @@
 </template>
 
 <script>
-import {mapGetters, mapActions} from "vuex";
+import { mapGetters } from "vuex";
 import { biblioModal } from "@/mixins/modals";
 import ListContainer from "@/components/parts/biblio/List.vue";
-import {RouteNames} from "@/router/routes";
+import { RouteNames } from "@/router/routes";
 import PageLayout from "@/components/parts/PageLayout.vue";
 import { LABEL_SOURCE_TYPE } from "@/components/forms/BookForm.vue";
 
@@ -67,29 +63,13 @@ export default {
     PageLayout,
     ListContainer
   },
-  data () {
+  data() {
     return {
       editMode: false,
       typeOfList: 'ol',
       selectedTypes: [],
-    }
-  },
-  computed: {
-    ...mapGetters('books', [
-      'getBooks'
-    ]),
-    RouteNames () {
-      return RouteNames
-    },
-    filteredBooks () {
-      let filtered = this.getBooks
-      if (this.selectedTypes.length > 0) {
-        filtered = filtered.filter(book => this.selectedTypes.includes(book.type))
-      }
-      return filtered
-    },
-    options () {
-      return [{
+      sortBy: null,
+      options: [{
         value: "ol",
         label: "Нумерованный список"
       }, {
@@ -99,13 +79,67 @@ export default {
         value: "div",
         label: "Блочный список"
       }]
+    }
+  },
+  computed: {
+    ...mapGetters('books', [
+      'getBooks'
+    ]),
+    RouteNames() {
+      return RouteNames
     },
-    LABEL_SOURCE_TYPE () {
+    filteredBooks() {
+      let filtered = this.getBooks
+      if (this.selectedTypes.length > 0) {
+        filtered = filtered.filter(book => this.selectedTypes.includes(book.type))
+      }
+      return filtered
+    },
+    LABEL_SOURCE_TYPE() {
       return LABEL_SOURCE_TYPE
     }
   },
   methods: {
-    ...mapActions('books', ['sortByType', 'sortByAuthor', 'sortByTitle', 'sortByYear'])
+    sortBooks() {
+      if (this.sortBy === 'type') {
+        this.sortByType()
+      }
+      else if (this.sortBy === 'author') {
+        this.sortByAuthor()
+      }
+      else if (this.sortBy === 'title') {
+        this.sortByTitle()
+      }
+      else if (this.sortBy === 'year') {
+        this.sortByYear()
+      }
+    },
+    sortByType() {
+      let sortedBooks = this.filteredBooks.sort((a, b) => {
+        return a.type.localeCompare(b.type)
+      })
+      this.$store.commit('books/setBooks', sortedBooks)
+    },
+    sortByAuthor() {
+      let sortedBooks = this.filteredBooks.sort((a, b) => {
+        const authorA = (a.authors && a.authors.length > 0) ? a.authors[0].surname : ''
+        const authorB = (b.authors && b.authors.length > 0) ? b.authors[0].surname : ''
+        return authorA.localeCompare(authorB)
+      })
+      this.$store.commit('books/setBooks', sortedBooks)
+    },
+    sortByTitle() {
+      let sortedBooks = this.filteredBooks.sort((a, b) => {
+        return a.title.localeCompare(b.title)
+      })
+      this.$store.commit('books/setBooks', sortedBooks)
+    },
+    sortByYear() {
+      let sortedBooks = this.filteredBooks.sort((a, b) => {
+        return a.year - b.year
+      })
+      this.$store.commit('books/setBooks', sortedBooks)
+    }
   }
 }
 </script>
