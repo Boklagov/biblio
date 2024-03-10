@@ -5,13 +5,16 @@
         <h2 class="flex-1">
           Список источников
         </h2>
-        <ElSelect v-model="typeOfList" size="small" placeholder="Выберите тип списка">
-          <ElOption
-            v-for="item in options"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
-          />
+        <ElSelect
+          v-model="typeOfList"
+          size="small"
+          placeholder="Выберите тип списка">
+            <ElOption
+              v-for="item in options"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            />
         </ElSelect>
         <ElSwitch
           v-model="editMode"
@@ -23,19 +26,27 @@
           @click="() => openNewBiblioModal()"
         >Добавить источник</ElButton>
       </div>
-      <ElSelect v-model="sortBy" size="small" placeholder="Сортировать по" @change="sortBooks">
-        <ElOption label="По типу" value="type" />
-        <ElOption label="По автору" value="author" />
-        <ElOption label="По названию" value="title" />
-        <ElOption label="По году" value="year" />
+      <ElSelect
+        v-model="sortBy"
+        size="small"
+        placeholder="Сортировать по"
+        @change="filteredAndSortedBooks">
+          <ElOption label="По типу" value="type" />
+          <ElOption label="По автору" value="author" />
+          <ElOption label="По названию" value="title" />
+          <ElOption label="По году" value="year" />
       </ElSelect>
-      <ElSelect v-model="selectedTypes" multiple size="small" placeholder="Выберите типы источников" @change="filterBooks">
-        <ElOption
-          v-for="(value, key) in LABEL_SOURCE_TYPE"
-          :key="key"
-          :label="value"
-          :value="key"
-        />
+      <ElSelect
+        v-model="selectedTypes"
+        multiple size="small"
+        placeholder="Выберите типы источников"
+        @change="filteredAndSortedBooks">
+          <ElOption
+            v-for="(value, key) in LABEL_SOURCE_TYPE"
+            :key="key"
+            :label="value"
+            :value="key"
+          />
       </ElSelect>
       <ListContainer
         :books="books"
@@ -68,7 +79,7 @@ export default {
       editMode: false,
       typeOfList: 'ol',
       selectedTypes: [],
-      sortBy: null,
+      sortBy: null
     }
   },
   computed: {
@@ -95,15 +106,6 @@ export default {
     },
     LABEL_SOURCE_TYPE() {
       return LABEL_SOURCE_TYPE
-    }
-  },
-  methods: {
-    sortBooks(type) {
-      this.sortBy = type
-      this.filteredAndSortedBooks(this.selectedTypes, type)
-    },
-    filterBooks(filters) {
-      this.selectedTypes = filters
     }
   }
 }
