@@ -30,7 +30,7 @@
         v-model="sortBy"
         size="small"
         placeholder="Сортировать по"
-        @change="filteredAndSortedBooks">
+        @change="() => filteredAndSortedBooks(selectedTypes, sortBy)">
           <ElOption label="По типу" value="type" />
           <ElOption label="По автору" value="author" />
           <ElOption label="По названию" value="title" />
@@ -38,9 +38,10 @@
       </ElSelect>
       <ElSelect
         v-model="selectedTypes"
-        multiple size="small"
+        multiple
+        size="small"
         placeholder="Выберите типы источников"
-        @change="filteredAndSortedBooks">
+        @change="() => filteredAndSortedBooks(selectedTypes, sortBy)">
           <ElOption
             v-for="(value, key) in LABEL_SOURCE_TYPE"
             :key="key"
