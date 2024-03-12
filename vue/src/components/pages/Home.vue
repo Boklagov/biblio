@@ -30,7 +30,7 @@
         v-model="sortBy"
         size="small"
         placeholder="Сортировать по"
-        @change="() => filteredAndSortedBooks(selectedTypes, sortBy)">
+        @change="() => getSortedBooks(sortBy)">
           <ElOption label="По типу" value="type" />
           <ElOption label="По автору" value="author" />
           <ElOption label="По названию" value="title" />
@@ -41,7 +41,7 @@
         multiple
         size="small"
         placeholder="Выберите типы источников"
-        @change="() => filteredAndSortedBooks(selectedTypes, sortBy)">
+        @change="() => filteredAndSortedBooks(selectedTypes)">
           <ElOption
             v-for="(value, key) in LABEL_SOURCE_TYPE"
             :key="key"
@@ -108,6 +108,26 @@ export default {
     LABEL_SOURCE_TYPE() {
       return LABEL_SOURCE_TYPE
     }
+  },
+  methods: {
+    getSortedBooks(type) {
+      const sortFunctions = {
+        "type": (a, b) => a.type.localeCompare(b.type),
+        "author": (a, b) => {
+          const authorA = (a.authors && a.authors.length > 0) ? a.authors[0].surname : ''
+          const authorB = (b.authors && b.authors.length > 0) ? b.authors[0].surname : ''
+          return authorA.localeCompare(authorB)
+        },
+        "title": (a, b) => a.title.localeCompare(b.title), 
+        "year": (a, b) => a.year - b.year
+      }
+      if (sortFunctions[type]) {
+        this.sortBy = sortFunctions[type]
+      } else {
+        this.sortBy = null
+      }
+    }
   }
 }
+
 </script>
