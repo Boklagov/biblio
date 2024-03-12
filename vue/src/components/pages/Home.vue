@@ -107,23 +107,26 @@ export default {
     },
     LABEL_SOURCE_TYPE () {
       return LABEL_SOURCE_TYPE
-    }
-  },
-  methods: {
-    getSortedBooks (type) {
-      const sortFunctions = {
-        "type": (a, b) => a.type.localeCompare(b.type),
-        "author": (a, b) => {
+    },
+    sortFunctions() {
+      return {
+        type: (a, b) => a.type.localeCompare(b.type),
+        author: (a, b) => {
           const authorA = (a.authors && a.authors.length > 0) ? a.authors[0].surname : ''
           const authorB = (b.authors && b.authors.length > 0) ? b.authors[0].surname : ''
           return authorA.localeCompare(authorB)
         },
-        "title": (a, b) => a.title.localeCompare(b.title), 
-        "year": (a, b) => a.year - b.year
+        title: (a, b) => a.title.localeCompare(b.title), 
+        year: (a, b) => a.year - b.year
       }
-      if (sortFunctions[type]) {
-        this.sortBy = sortFunctions[type]
-      } else {
+    }
+  },
+  methods: {
+    getSortedBooks(type) {
+      if (this.sortFunctions[type]) {
+        this.sortBy = this.sortFunctions[type]
+      } 
+      else {
         this.sortBy = null
       }
     }
