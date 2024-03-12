@@ -75,7 +75,7 @@ export default {
     PageLayout,
     ListContainer
   },
-  data() {
+  data () {
     return {
       editMode: false,
       typeOfList: 'ol',
@@ -87,7 +87,7 @@ export default {
     ...mapGetters('books', [
       'filteredAndSortedBooks'
     ]),
-    RouteNames() {
+    RouteNames () {
       return RouteNames
     },
     books () {
@@ -105,12 +105,12 @@ export default {
         label: "Блочный список"
       }]
     },
-    LABEL_SOURCE_TYPE() {
+    LABEL_SOURCE_TYPE () {
       return LABEL_SOURCE_TYPE
     }
   },
   methods: {
-    getSortedBooks(type) {
+    getSortedBooks (type) {
       const sortFunctions = {
         "type": (a, b) => a.type.localeCompare(b.type),
         "author": (a, b) => {
