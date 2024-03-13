@@ -26,31 +26,38 @@
           @click="() => openNewBiblioModal()"
         >Добавить источник</ElButton>
       </div>
-      <ElSelect
-        v-model="sortBy"
-        size="small"
-        placeholder="Сортировать по"
-        @change="() => getSortedBooks(sortBy)"
-        >
-          <ElOption label="По типу" value="type" />
-          <ElOption label="По автору" value="author" />
-          <ElOption label="По названию" value="title" />
-          <ElOption label="По году" value="year" />
-      </ElSelect>
-      <ElSelect
-        v-model="selectedTypes"
-        multiple
-        size="small"
-        placeholder="Выберите типы источников"
-        @change="() => filteredAndSortedBooks(selectedTypes)"
-        >
-          <ElOption
-            v-for="(value, key) in LABEL_SOURCE_TYPE"
-            :key="key"
-            :label="value"
-            :value="key"
-          />
-      </ElSelect>
+      <div class="order">
+        <div class="order--sort">
+          <ElSelect
+            v-model="sortBy"
+            size="small"
+            placeholder="Сортировать по"
+            @change="() => getSortedBooks(sortBy)"
+            >
+              <ElOption label="По типу" value="type" />
+              <ElOption label="По автору" value="author" />
+              <ElOption label="По названию" value="title" />
+              <ElOption label="По году" value="year" />
+          </ElSelect>
+        </div>
+        <div class="order--filter">
+          <ElSelect
+            v-model="selectedTypes"
+            multiple
+            size="small"
+            placeholder="Выберите типы источников"
+            @change="() => filteredAndSortedBooks(selectedTypes)"
+            collapse-tags
+            >
+              <ElOption
+                v-for="(value, key) in LABEL_SOURCE_TYPE"
+                :key="key"
+                :label="`${value}`"
+                :value="key"
+              />
+          </ElSelect>
+        </div>
+      </div>
       <ListContainer
         :books="books"
         :type-list="editMode ? 'div' : typeOfList"
@@ -127,12 +134,23 @@ export default {
     getSortedBooks (type) {
       if (this.sortFunctions[type]) {
         this.sortBy = this.sortFunctions[type]
-      } 
+      }
       else {
         this.sortBy = null
       }
     }
   }
 }
-
 </script>
+
+<style lang="less" scoped>
+.order{
+  display: flex;
+  &--sort{
+    padding: 10px 10px 10px 20px;
+  }
+  &--filter{
+    padding: 10px;
+  }
+}
+</style>
