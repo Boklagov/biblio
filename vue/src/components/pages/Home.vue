@@ -146,7 +146,7 @@ export default {
     },
     groupedBooks () {
       if (!this.groupField) {
-        return [{ label: "All Books", books: this.books }]
+        return [{ label: "Все источники", books: this.books }]
       }
       const groups = {}
       this.books.forEach(book => {
@@ -158,7 +158,6 @@ export default {
       })
       for (const group in groups) {
         if (this.groupField === "year") {
-        
           groups[group] = groups[group].slice().sort((a, b) => b.year - a.year)
         } else {
           groups[group] = groups[group].slice().sort(this.sortFunctions[this.sortBy])
