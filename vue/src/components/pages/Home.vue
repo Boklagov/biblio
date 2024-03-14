@@ -105,6 +105,7 @@ export default {
       selectedTypes: [],
       sortBy: null,
       groupField: null
+
     }
   },
   computed: {
@@ -202,6 +203,7 @@ export default {
         default:
           return "Unknown"
       }
+
     }
   }
 }
