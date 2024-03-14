@@ -105,6 +105,7 @@ export default {
       selectedTypes: [],
       sortBy: null,
       groupField: null
+
     }
   },
   computed: {
@@ -174,6 +175,7 @@ export default {
         label: key,
         books: groups[key]
       }))
+
     }
   },
   methods: {
@@ -201,6 +203,7 @@ export default {
         default:
           return "Unknown"
       }
+
     }
   }
 }
