@@ -72,7 +72,7 @@
         </div>
       </div>
       <div v-if="groupedBooks.length">
-        <div v-for="(group, index) in groupedBooks" :key="index">
+        <div class="caption" v-for="(group, index) in groupedBooks" :key="index">
           <h3>{{ group.label }}</h3>
           <ListContainer :books="group.books" :type-list="editMode ? 'div' : typeOfList" :is-edit="editMode" />
         </div>
@@ -174,6 +174,7 @@ export default {
         label: key,
         books: groups[key]
       }))
+
     }
   },
   methods: {
@@ -218,5 +219,8 @@ export default {
   &--group{
     padding: 10px;
   }
+}
+.caption{
+  text-align: center;
 }
 </style>
