@@ -57,12 +57,26 @@
               />
           </ElSelect>
         </div>
+        <div class="order--group">
+          <ElSelect
+            v-model="groupField"
+            size="small"
+            placeholder="Группировать по"
+            @change="() => groupBooks()"
+            >
+              <ElOption label="Автор" value="author" />
+              <ElOption label="Год" value="year" />
+              <ElOption label="Отметки" value="tags" />
+              <ElOption label="Город" value="city" />
+          </ElSelect>
+        </div>
       </div>
-      <ListContainer
-        :books="books"
-        :type-list="editMode ? 'div' : typeOfList"
-        :is-edit="editMode"
-      />
+      <div v-if="groupedBooks.length">
+        <div v-for="(group, index) in groupedBooks" :key="index">
+          <h3>{{ group.label }}</h3>
+          <ListContainer :books="group.books" :type-list="editMode ? 'div' : typeOfList" :is-edit="editMode" />
+        </div>
+      </div>
     </section>
   </PageLayout>
 </template>
@@ -89,7 +103,8 @@ export default {
       editMode: false,
       typeOfList: 'ol',
       selectedTypes: [],
-      sortBy: null
+      sortBy: null,
+      groupField: null
     }
   },
   computed: {
@@ -128,6 +143,38 @@ export default {
         title: (a, b) => a.title.localeCompare(b.title), 
         year: (a, b) => a.year - b.year
       }
+    },
+    groupedBooks () {
+      if (!this.groupField) {
+        return [{ label: "All Books", books: this.books }]
+      }
+      const groups = {}
+      this.books.forEach(book => {
+        const groupValue = this.getGroupValue(book, this.groupField)
+        if (!groups[groupValue]) {
+          groups[groupValue] = []
+        }
+        groups[groupValue].push(book)
+      })
+      for (const group in groups) {
+        if (this.groupField === "year") {
+        
+          groups[group] = groups[group].slice().sort((a, b) => b.year - a.year)
+        } else {
+          groups[group] = groups[group].slice().sort(this.sortFunctions[this.sortBy])
+        }
+      }
+      const sortedGroups = Object.keys(groups).sort((a, b) => {
+        if (this.groupField === "year") {
+          return parseInt(b) - parseInt(a)
+        } else {
+          return a.localeCompare(b)
+        }
+      })
+      return sortedGroups.map(key => ({
+        label: key,
+        books: groups[key]
+      }))
     }
   },
   methods: {
@@ -137,6 +184,23 @@ export default {
       }
       else {
         this.sortBy = null
+      }
+    },
+    groupBooks() {
+      this.sortBy = null
+    },
+    getGroupValue(book, field) {
+      switch (field) {
+        case "author":
+          return book.authors[0].surname
+        case "year":
+          return book.year
+        case "tags":
+          return book.tags
+        case "city":
+          return book.city
+        default:
+          return "Unknown"
       }
     }
   }
@@ -150,6 +214,9 @@ export default {
     padding: 10px 10px 10px 20px;
   }
   &--filter{
+    padding: 10px;
+  }
+  &--group{
     padding: 10px;
   }
 }
